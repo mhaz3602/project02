@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    protected $table = 'booking';
     protected $fillable = [
         'id_mahasiswa',
         'id_ruangan',
@@ -15,4 +16,14 @@ class Booking extends Model
         'keperluan',
         'status'
     ];
+
+    public function ruangan()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan');
+    }
+
+    public function mahasiswa()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
+    }
 }

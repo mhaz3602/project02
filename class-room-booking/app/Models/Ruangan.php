@@ -18,4 +18,3 @@ class Ruangan extends Model
         'fasilitas',
     ];
 }
-

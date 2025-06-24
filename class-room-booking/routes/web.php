@@ -1,11 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\RuanganController;
+use App\Http\Controllers\KalenderController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,4 +31,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 
     Route::resource('ruangan', RuanganController::class);
+    Route::get('/kalender', [KalenderController::class, 'index']);
 });
