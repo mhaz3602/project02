@@ -28,5 +28,5 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/booking', [BookingController::class, 'index'])->name('booking');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    Route::get('/kalender', [KalenderController::class, 'index']);
+    Route::get('/kalender', [KalenderController::class, 'index'])->name(('kalender'));
 });
