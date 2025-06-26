@@ -29,7 +29,11 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/booking', [BookingController::class, 'index'])->name('booking');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+<<<<<<< HEAD
+    Route::get('/kalender', [KalenderController::class, 'index'])->name(('kalender'));
+=======
 
     Route::resource('ruangan', RuanganController::class);
     Route::get('/kalender', [KalenderController::class, 'index']);
+>>>>>>> 4139199a66751d46c3005b340bd761accc04e405
 });
