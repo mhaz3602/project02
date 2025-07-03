@@ -12,12 +12,11 @@ class KalenderController extends Controller
         $bookings = Booking::with(['mahasiswa', 'ruangan'])->get()->map(function ($booking) {
             return [
                 'title' => $booking->ruangan->nama_ruangan . ' - ' . $booking->keperluan,
-                'start' => $booking->tanggal . ' ' . $booking->jam_mulai,
-                'end' => $booking->tanggal . ' ' . $booking->jam_selesai,
+                'start' => date('Y-m-d\TH:i:s', strtotime($booking->tanggal . ' ' . $booking->jam_mulai)),
+                'end' => date('Y-m-d\TH:i:s', strtotime($booking->tanggal . ' ' . $booking->jam_selesai)),
                 'status' => $booking->status,
             ];
         });
-
 
         return view('kalender', ['events' => $bookings]);
     }

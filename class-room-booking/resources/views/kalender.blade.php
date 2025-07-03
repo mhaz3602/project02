@@ -1,26 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Kalender Ketersediaan Ruangan</title>
+    <meta charset="UTF-8">
+    <title>Kalender Booking</title>
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css' rel='stylesheet' />
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.min.js'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 50px auto;
+        }
+    </style>
 </head>
 <body>
-    <div id='calendar'></div>
 
+    <h2 style="text-align: center;">Jadwal Booking Ruangan</h2>
+
+    <div id="calendar"></div>
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js'></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
+            const calendarEl = document.getElementById('calendar');
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: 'id',
-                events: @json($events) // langsung masukkan dari controller
+                height: 'auto',
+                events: @json($events),
             });
 
+            console.log("Events Loaded:", @json($events)); // Debug
             calendar.render();
         });
     </script>
+
 </body>
 </html>

@@ -31,5 +31,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 
     Route::resource('ruangan', RuanganController::class);
-    Route::get('/kalender', [KalenderController::class, 'index']);
+    Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
 });
