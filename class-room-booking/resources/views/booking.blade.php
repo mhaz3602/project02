@@ -18,9 +18,9 @@
             <label for="id_ruangan" class="form-label">Ruangan</label>
             <select name="id_ruangan" class="form-control" required>
                 <option value="">-- Pilih Ruangan --</option>
-                {{-- @foreach($ruangan as $r)
+                @foreach($ruangan as $r)
                     <option value="{{ $r->id }}">{{ $r->nama }} ({{ $r->kapasitas }} org)</option>
-                @endforeach --}}
+                @endforeach 
             </select>
         </div>
         <div class="mb-3">

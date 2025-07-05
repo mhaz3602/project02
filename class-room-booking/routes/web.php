@@ -22,14 +22,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+
+Route::middleware(['auth'])->group(function () {
+    
+    // Ruangan
+    Route::resource('ruangan', RuanganController::class);
+
+    // Booking
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+    Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+
+    // Kalender
+    Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
+});
+
 });
 
 require __DIR__ . '/auth.php';
-
-Route::middleware('auth')->group(function () {
-    Route::get('/booking', [BookingController::class, 'index'])->name('booking');
-    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-
-    Route::resource('ruangan', RuanganController::class);
-    Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
-});

@@ -1,42 +1,35 @@
-@extends('layouts.app')
+<x-layouts.app title="Daftar Ruangan">
+    <div class="p-6 space-y-6">
+        <h2 class="text-2xl font-bold text-blue-700">Daftar Ruangan Tersedia</h2>
 
-@section('content')
-<div class="container">
-    <h1>Daftar Ruangan</h1>
-    <a href="{{ route('ruangan.create') }}" class="btn btn-primary mb-3">Tambah Ruangan</a>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @forelse($ruangan as $r)
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <!-- Gambar ruangan -->
+                    <img src="{{ asset('images/ruangan/' . $r->foto) }}" alt="{{ $r->nama }}" class="rounded-lg w-full h-40 object-cover">
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Kapasitas</th>
-                <th>Lokasi</th>
-                <th>Fasilitas</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($ruangan as $r)
-            <tr>
-                <td>{{ $r->nama }}</td>
-                <td>{{ $r->kapasitas }}</td>
-                <td>{{ $r->lokasi }}</td>
-                <td>{{ $r->fasilitas }}</td>
-                <td>
-                    <a href="{{ route('ruangan.edit', $r->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('ruangan.destroy', $r->id) }}" method="POST" style="display:inline">
-                        @csrf
-                        @method('DELETE')
-                        <button onclick="return confirm('Yakin mau hapus?')" class="btn btn-danger btn-sm">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-@endsection
+                    <!-- Konten ruangan -->
+                    <div class="p-4 space-y-2">
+                        <h3 class="text-xl font-semibold text-gray-800">{{ $r->nama }}</h3>
+                        <p class="text-sm text-gray-600">Kapasitas: <strong>{{ $r->kapasitas }} orang</strong></p>
+                        <p class="text-sm text-gray-600">Lokasi: {{ $r->lokasi }}</p>
+                        @if($r->fasilitas)
+                            <p class="text-sm text-gray-600">Fasilitas: {{ $r->fasilitas }}</p>
+                        @endif
+
+                        <!-- Tombol Pinjam -->
+                        <div class="pt-3">
+                            <a href="{{ route('booking.create', ['ruangan' => $r->id]) }}"
+                               class="inline-block bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded hover:bg-blue-700 transition">
+                                Pinjam Ruangan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <p class="text-gray-600">Belum ada ruangan tersedia.</p>
+            @endforelse
+        </div>
+    </div>
+</x-layouts.app>

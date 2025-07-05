@@ -13,6 +13,13 @@ class MahasiswaSeeder extends Seeder
      */
     public function run(): void
     {
+        // Nonaktifkan foreign key check jika ada relasi
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Hapus data lama
+        DB::table('mahasiswa')->truncate();
+
+        // Masukkan data baru
         DB::table('mahasiswa')->insert([
             [
                 'nama' => 'Uci Ananda',
@@ -60,5 +67,8 @@ class MahasiswaSeeder extends Seeder
                 'updated_at' => now(),
             ],
         ]);
+
+        // Aktifkan kembali foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

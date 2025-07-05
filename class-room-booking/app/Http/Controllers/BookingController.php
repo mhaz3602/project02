@@ -19,6 +19,49 @@ class BookingController extends Controller
         return view('booking.riwayat', compact('bookings'));
     }
 
+    public function create(Request $request)
+    {
+        $ruanganId = $request->query('ruangan_id');
+        $ruanganTerpilih = Ruangan::find($ruanganId);
+        $ruangan = Ruangan::all();
+
+        return view('booking.create', compact('ruangan', 'ruanganTerpilih'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'id_ruangan' => 'required',
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'keperluan' => 'required'
+        ]);
+
+        $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
+            ->where('tanggal', $request->tanggal)
+            ->where(function ($q) use ($request) {
+                $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+                  ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
+            })->exists();
+
+        if ($bentrok) {
+            return back()->with('error', 'Jadwal bentrok dengan booking lain.');
+        }
+
+        Booking::create([
+            'id_mahasiswa' => Auth::id(),
+            'id_ruangan' => $request->id_ruangan,
+            'tanggal' => $request->tanggal,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+            'keperluan' => $request->keperluan,
+            'status' => 'menunggu'
+        ]);
+
+        return redirect()->route('booking')->with('success', 'Booking berhasil diajukan!');
+    }
+
     public function edit($id)
     {
         $booking = Booking::where('id', $id)->where('id_mahasiswa', Auth::id())->firstOrFail();
@@ -30,7 +73,6 @@ class BookingController extends Controller
     {
         $booking = Booking::where('id', $id)->where('id_mahasiswa', Auth::id())->firstOrFail();
 
-        // Validasi
         $request->validate([
             'id_ruangan' => 'required',
             'tanggal' => 'required|date',
@@ -39,7 +81,6 @@ class BookingController extends Controller
             'keperluan' => 'required'
         ]);
 
-        // Cek bentrok
         $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
             ->where('tanggal', $request->tanggal)
             ->where('id', '!=', $id)

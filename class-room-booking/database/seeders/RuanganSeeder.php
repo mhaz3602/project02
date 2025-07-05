@@ -7,49 +7,55 @@ use Illuminate\Support\Facades\DB;
 
 class RuanganSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
+        // Hapus data lama
+        DB::table('ruangan')->delete();
+
+        // Masukkan data ruangan baru
         DB::table('ruangan')->insert([
             [
-                'nama' => 'Ruang Rapat A',
-                'kapasitas' => 20,
-                'lokasi' => 'Lantai 1',
-                'fasilitas' => 'AC, Proyektor, Whiteboard',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama' => 'Ruang Diskusi B',
-                'kapasitas' => 10,
-                'lokasi' => 'Lantai 2',
-                'fasilitas' => 'Whiteboard, TV',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nama' => 'Ruang Kelas C',
+                'nama' => 'Ruang Seminar 1',
                 'kapasitas' => 30,
-                'lokasi' => 'Lantai 3',
-                'fasilitas' => 'AC, Proyektor',
+                'lokasi' => 'Gedung A, Lt. 1',
+                'fasilitas' => 'Proyektor, AC, Whiteboard',
+                'foto' => 'ruanganb.jpeg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Ruang Serbaguna D',
-                'kapasitas' => 50,
-                'lokasi' => 'Lantai Dasar',
-                'fasilitas' => 'AC, Mic, Speaker',
+                'nama' => 'Ruang Rapat 2',
+                'kapasitas' => 20,
+                'lokasi' => 'Gedung B, Lt. 2',
+                'fasilitas' => 'AC, Meja Rapat, WiFi',
+                'foto' => 'ruanganc.jpeg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Ruang Meeting VIP',
-                'kapasitas' => 8,
-                'lokasi' => 'Lantai 1',
-                'fasilitas' => 'AC, Sofa, TV',
+                'nama' => 'Ruang Diskusi 3',
+                'kapasitas' => 15,
+                'lokasi' => 'Gedung C, Lt. 3',
+                'fasilitas' => 'WiFi, Papan Tulis',
+                'foto' => 'ruangand.jpeg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Ruang Presentasi 4',
+                'kapasitas' => 40,
+                'lokasi' => 'Gedung A, Lt. 2',
+                'fasilitas' => 'Proyektor, Mic, Panggung',
+                'foto' => 'b303.jpeg',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama' => 'Ruang Workshop 5',
+                'kapasitas' => 25,
+                'lokasi' => 'Gedung D, Lt. 1',
+                'fasilitas' => 'Laptop, WiFi, Whiteboard',
+                'foto' => 'ruangana.jpeg',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
