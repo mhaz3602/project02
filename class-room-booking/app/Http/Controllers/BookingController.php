@@ -11,117 +11,90 @@ class BookingController extends Controller
 {
     public function index()
     {
-        $bookings = Booking::with('ruangan')
-            ->where('id_mahasiswa', Auth::id())
-            ->latest()
-            ->get();
-
-        return view('booking.riwayat', compact('bookings'));
+        $booking = Booking::with('ruangan')->latest()->get();
+        return view('booking.index', compact('booking'));
     }
 
     public function create(Request $request)
     {
-        // Ganti 'ruangan_id' dengan 'ruangan'
-        $ruanganId = $request->query('ruangan') ?? $request->query('ruangan_id');
-        $ruanganTerpilih = Ruangan::find($ruanganId);
+        $ruanganTerpilih = null;
 
-        if (!$ruanganTerpilih) {
-            abort(404, 'Ruangan tidak ditemukan.');
+        if ($request->has('ruangan')) {
+            $ruanganTerpilih = Ruangan::find($request->ruangan);
         }
 
         return view('booking.create', compact('ruanganTerpilih'));
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
-            'id_ruangan' => 'required',
-            'nama' => 'required|string',
-            'nim' => 'required|string',
-            'no_telp' => 'required|string',
+            'id_ruangan' => 'required|exists:ruangan,id',
+            'nama' => 'required|string|max:100',
+            'nim' => 'required|string|max:30',
+            'no_telp' => 'required|string|max:20',
             'tanggal' => 'required|date',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required|after:jam_mulai',
-            'keperluan' => 'required|string'
+            'keperluan' => 'required|string|max:100',
         ]);
 
-
+        // Cek bentrok booking
         $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
             ->where('tanggal', $request->tanggal)
-            ->where(function ($q) use ($request) {
-                $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
-                    ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
-            })->exists();
+            ->where(function ($query) use ($request) {
+                $query->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
+                      ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
+            })
+            ->exists();
 
         if ($bentrok) {
             return back()->with('error', 'Jadwal bentrok dengan booking lain.');
         }
 
-        $request->validate([
-            'id_ruangan' => 'required',
-            'nama' => 'required|string',
-            'nim' => 'required|string',
-            'no_telp' => 'required|string',
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai',
-            'keperluan' => 'required|string'
-        ]);
-
-        return redirect()->route('booking')->with('success', 'Booking berhasil diajukan!');
-    }
-
-    public function edit($id)
-    {
-        $booking = Booking::where('id', $id)->where('id_mahasiswa', Auth::id())->firstOrFail();
-        $ruangan = Ruangan::all();
-        return view('booking.edit', compact('booking', 'ruangan'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $booking = Booking::where('id', $id)->where('id_mahasiswa', Auth::id())->firstOrFail();
-
-        $request->validate([
-            'id_ruangan' => 'required',
-            'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai',
-            'keperluan' => 'required'
-        ]);
-
-        $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
-            ->where('tanggal', $request->tanggal)
-            ->where('id', '!=', $id)
-            ->where(function ($q) use ($request) {
-                $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
-                    ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
-            })->exists();
-
-        if ($bentrok) {
-            return back()->with('error', 'Jadwal bentrok dengan booking lain.');
-        }
-
-        $booking->update([
+        // Simpan data booking
+        Booking::create([
             'id_ruangan' => $request->id_ruangan,
+            'id_mahasiswa' => Auth::id(), // pastikan user login
+            'nama' => $request->nama,
+            'nim' => $request->nim,
+            'no_telp' => $request->no_telp,
             'tanggal' => $request->tanggal,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
             'keperluan' => $request->keperluan,
+            'status' => 'pending',
         ]);
 
-        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil diperbarui!');
+        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil diajukan!');
     }
 
-    public function destroy($id)
+    public function riwayat()
     {
-        $booking = Booking::where('id', $id)->where('id_mahasiswa', Auth::id())->firstOrFail();
+        $riwayat = Booking::with('ruangan')->orderByDesc('created_at')->get();
+        return view('booking.riwayat', compact('riwayat'));
+    }
 
-        $booking->update([
-            'status' => 'dibatalkan'
-        ]);
+    // Tambahan resource method jika perlu
+    public function show(Booking $booking)
+    {
+        return view('booking.show', compact('booking'));
+    }
 
-        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil dibatalkan.');
+    public function edit(Booking $booking)
+    {
+        return view('booking.edit', compact('booking'));
+    }
+
+    public function update(Request $request, Booking $booking)
+    {
+        $booking->update($request->all());
+        return redirect()->route('booking.index')->with('success', 'Booking diperbarui.');
+    }
+
+    public function destroy(Booking $booking)
+    {
+        $booking->delete();
+        return redirect()->route('booking.index')->with('success', 'Booking dihapus.');
     }
 }
