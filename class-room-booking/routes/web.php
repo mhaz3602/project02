@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Booking
     Route::get('/booking', [BookingController::class, 'index'])->name('booking');
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 
