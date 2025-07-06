@@ -19,14 +19,19 @@ class BookingController extends Controller
         return view('booking.riwayat', compact('bookings'));
     }
 
-    public function create(Request $request)
-    {
-        $ruanganId = $request->query('ruangan_id');
-        $ruanganTerpilih = Ruangan::find($ruanganId);
-        $ruangan = Ruangan::all();
+        public function create(Request $request)
+        {
+            // Ganti 'ruangan_id' dengan 'ruangan'
+            $ruanganId = $request->query('ruangan') ?? $request->query('ruangan_id'); 
+            $ruanganTerpilih = Ruangan::find($ruanganId);
 
-        return view('booking.create', compact('ruangan', 'ruanganTerpilih'));
-    }
+            if (!$ruanganTerpilih) {
+                abort(404, 'Ruangan tidak ditemukan.');
+            }
+
+            return view('booking.create', compact('ruanganTerpilih'));
+        }
+
 
     public function store(Request $request)
     {

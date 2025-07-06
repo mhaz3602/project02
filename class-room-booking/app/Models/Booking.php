@@ -8,14 +8,18 @@ class Booking extends Model
 {
     protected $table = 'booking';
     protected $fillable = [
+        'nama',
+        'nim',
+        'no_telp',
         'id_mahasiswa',
         'id_ruangan',
         'tanggal',
         'jam_mulai',
         'jam_selesai',
         'keperluan',
-        'status'
+        'status',
     ];
+
 
     public function ruangan()
     {
