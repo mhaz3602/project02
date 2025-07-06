@@ -60,7 +60,7 @@ class RuanganSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Ruangan Kelas B1 105',
+                'nama' => 'Ruang Kelas B1 105',
                 'kapasitas' => 25,
                 'lokasi' => 'Gedung Kampus B1 105, Lantai 1',
                 'fasilitas' => 'AC, LCD Projector, WiFi, Kursi, Whiteboard, Komputer',
@@ -69,7 +69,7 @@ class RuanganSeeder extends Seeder
                 'updated_at' => now(),
             ],
               [
-                'nama' => 'Ruangan Kelas B1 106',
+                'nama' => 'Ruang Kelas B1 106',
                 'kapasitas' => 20,
                 'lokasi' => 'Gedung Kampus B1 106, Lantai 1',
                 'fasilitas' => 'AC, LCD Projector, WiFi, Kursi, Whiteboard, Komputer',

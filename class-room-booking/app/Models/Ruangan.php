@@ -16,5 +16,6 @@ class Ruangan extends Model
         'kapasitas',
         'lokasi',
         'fasilitas',
+        'foto',
     ];
 }

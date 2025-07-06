@@ -6,18 +6,35 @@
 </head>
 
 <body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-gradient-to-b from-blue-50 via-white to-blue-100 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
         <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
             <x-app-logo />
+            <div class="ml-2 text-lg font-bold tracking-tight text-blue-700 dark:text-white">
+                Booking Room
+            </div>
         </a>
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')" class="grid">
-                <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                <flux:navlist.item icon="home" :href="route('ruangan.index')" :current="request()->routeIs('ruangan.index')" wire:navigate>{{ __('Ruangan') }}</flux:navlist.item>
-                <flux:navlist.item icon="home" :href="route('kalender')" :current="request()->routeIs('kalender')" wire:navigate>Kalender</flux:navlist.item>
+                <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40"
+                    :class="request()->routeIs('dashboard') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                    🏠 Dashboard
+                </flux:navlist.item>
+
+                <flux:navlist.item icon="building-library" :href="route('ruangan.index')" :current="request()->routeIs('ruangan.index')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40"
+                    :class="request()->routeIs('ruangan.index') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                    🏢 Ruangan
+                </flux:navlist.item>
+
+                <flux:navlist.item icon="calendar" :href="route('kalender')" :current="request()->routeIs('kalender')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40"
+                    :class="request()->routeIs('kalender') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                    📆 Kalender
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
@@ -33,12 +50,14 @@
             </flux:navlist.item>
         </flux:navlist>
 
+        <div class="text-xs text-gray-400 px-4 pb-4 mt-auto">
+            <hr class="my-3 border-gray-300 dark:border-zinc-700" />
+            <p>© {{ date('Y') }} STT-NF | v1.0</p>
+        </div>
+
         <!-- Desktop User Menu -->
         <flux:dropdown class="hidden lg:block" position="bottom" align="start">
-            <flux:profile
-                :name="auth()->user()->name"
-                :initials="auth()->user()->initials()"
-                icon:trailing="chevrons-up-down" />
+            <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()" icon:trailing="chevrons-up-down" />
 
             <flux:menu class="w-[220px]">
                 <flux:menu.radio.group>
@@ -83,9 +102,7 @@
         <flux:spacer />
 
         <flux:dropdown position="top" align="end">
-            <flux:profile
-                :initials="auth()->user()->initials()"
-                icon-trailing="chevron-down" />
+            <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
 
             <flux:menu>
                 <flux:menu.radio.group>
