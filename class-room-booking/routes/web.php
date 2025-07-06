@@ -17,14 +17,12 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    // Settings
     Route::redirect('settings', 'settings/profile');
-
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
-Route::middleware(['auth'])->group(function () {
-    
     // Ruangan
     Route::resource('ruangan', RuanganController::class);
 
@@ -35,8 +33,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Kalender
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
-});
-
 });
 
 require __DIR__ . '/auth.php';

@@ -19,49 +19,54 @@ class BookingController extends Controller
         return view('booking.riwayat', compact('bookings'));
     }
 
-        public function create(Request $request)
-        {
-            // Ganti 'ruangan_id' dengan 'ruangan'
-            $ruanganId = $request->query('ruangan') ?? $request->query('ruangan_id'); 
-            $ruanganTerpilih = Ruangan::find($ruanganId);
+    public function create(Request $request)
+    {
+        // Ganti 'ruangan_id' dengan 'ruangan'
+        $ruanganId = $request->query('ruangan') ?? $request->query('ruangan_id');
+        $ruanganTerpilih = Ruangan::find($ruanganId);
 
-            if (!$ruanganTerpilih) {
-                abort(404, 'Ruangan tidak ditemukan.');
-            }
-
-            return view('booking.create', compact('ruanganTerpilih'));
+        if (!$ruanganTerpilih) {
+            abort(404, 'Ruangan tidak ditemukan.');
         }
+
+        return view('booking.create', compact('ruanganTerpilih'));
+    }
 
 
     public function store(Request $request)
     {
         $request->validate([
             'id_ruangan' => 'required',
+            'nama' => 'required|string',
+            'nim' => 'required|string',
+            'no_telp' => 'required|string',
             'tanggal' => 'required|date',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required|after:jam_mulai',
-            'keperluan' => 'required'
+            'keperluan' => 'required|string'
         ]);
+
 
         $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
             ->where('tanggal', $request->tanggal)
             ->where(function ($q) use ($request) {
                 $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
-                  ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
+                    ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
             })->exists();
 
         if ($bentrok) {
             return back()->with('error', 'Jadwal bentrok dengan booking lain.');
         }
 
-        Booking::create([
-            'id_mahasiswa' => Auth::id(),
-            'id_ruangan' => $request->id_ruangan,
-            'tanggal' => $request->tanggal,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $request->jam_selesai,
-            'keperluan' => $request->keperluan,
-            'status' => 'menunggu'
+        $request->validate([
+            'id_ruangan' => 'required',
+            'nama' => 'required|string',
+            'nim' => 'required|string',
+            'no_telp' => 'required|string',
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'keperluan' => 'required|string'
         ]);
 
         return redirect()->route('booking')->with('success', 'Booking berhasil diajukan!');
@@ -91,7 +96,7 @@ class BookingController extends Controller
             ->where('id', '!=', $id)
             ->where(function ($q) use ($request) {
                 $q->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
-                  ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
+                    ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
             })->exists();
 
         if ($bentrok) {

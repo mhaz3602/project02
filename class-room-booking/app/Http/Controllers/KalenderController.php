@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Booking;
+use Carbon\Carbon;
 
 class KalenderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with(['mahasiswa', 'ruangan'])->get()->map(function ($booking) {
-            return [
-                'title' => $booking->ruangan->nama_ruangan . ' - ' . $booking->keperluan,
-                'start' => date('Y-m-d\TH:i:s', strtotime($booking->tanggal . ' ' . $booking->jam_mulai)),
-                'end' => date('Y-m-d\TH:i:s', strtotime($booking->tanggal . ' ' . $booking->jam_selesai)),
-                'status' => $booking->status,
-            ];
-        });
+        $bulan = $request->input('bulan') ?? now()->month;
+        $tahun = $request->input('tahun') ?? now()->year;
 
-        return view('kalender', ['events' => $bookings]);
+        $tanggal = Carbon::createFromDate($tahun, $bulan, 1);
+
+        return view('kalender.index', compact('tanggal'));
     }
 }
