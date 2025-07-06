@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Campus Room Booking</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js']) {{-- Jika pakai Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body {
             background: url('/images/bgruangan.webp') no-repeat center center fixed;
@@ -35,55 +35,76 @@
 
     <div class="w-full max-w-md bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-8 flex flex-col gap-6 fade-in">
         
-        <!-- Logo Besar dengan Animasi Bernafas -->
+        <!-- Logo -->
         <div class="flex justify-center">
             <img src="{{ asset('images/logosttnf.jpg') }}" alt="Logo Kampus" class="h-28 w-auto mb-4 drop-shadow-lg logo-breath">
         </div>
 
-        <!-- Judul & Subjudul -->
+        <!-- Judul -->
         <div class="text-center">
             <h2 class="text-3xl font-semibold text-gray-800">Access Your Campus Room Booking</h2>
             <p class="text-sm text-gray-600 mt-2">Sign in to reserve meeting rooms and study spaces effortlessly.</p>
         </div>
 
-        <!-- Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
-
         <!-- Form Login -->
-        <form wire:submit="login" class="flex flex-col gap-5 mt-4">
+        <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-5 mt-4">
+            @csrf
+
             <!-- Email -->
-            <flux:input
-                wire:model="email"
-                label="Email address"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="your@email.com"
-            />
+            <div>
+                <label for="email" class="block text-gray-700 font-semibold mb-1">Email address</label>
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value="{{ old('email') }}"
+                    required
+                    autofocus
+                    autocomplete="email"
+                    placeholder="your@email.com"
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
+                >
+            </div>
 
             <!-- Password -->
             <div class="relative">
-                <flux:input
-                    wire:model="password"
-                    label="Password"
+                <label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
+                <input
+                    id="password"
+                    name="password"
                     type="password"
                     required
                     autocomplete="current-password"
                     placeholder="Your password"
-                    viewable
-                />
+                    class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 transition"
+                >
                 @if (Route::has('password.request'))
-                    <flux:link class="absolute end-0 top-0 text-sm text-blue-500 hover:underline" :href="route('password.request')" wire:navigate>
+                    <a href="{{ route('password.request') }}" class="absolute end-0 top-0 text-sm text-blue-500 hover:underline">
                         {{ __('Forgot your password?') }}
-                    </flux:link>
+                    </a>
+                @endif
+                <!-- Error Message -->
+                @if ($errors->has('email'))
+                    <p class="text-red-500 text-sm mt-2">
+                        {{ $errors->first('email') }}
+                    </p>
                 @endif
             </div>
 
             <!-- Remember Me -->
-            <flux:checkbox wire:model="remember" label="Remember me" />
+            <div class="flex items-center">
+                <input
+                    id="remember_me"
+                    name="remember"
+                    type="checkbox"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                >
+                <label for="remember_me" class="ml-2 block text-gray-700 text-sm">
+                    Remember me
+                </label>
+            </div>
 
-            <!-- Tombol Login -->
+            <!-- Login Button -->
             <div>
                 <button
                     type="submit"
@@ -98,9 +119,9 @@
         @if (Route::has('register'))
             <div class="text-center text-sm text-gray-500 mt-4">
                 Don’t have an account?
-                <flux:link :href="route('register')" wire:navigate class="text-blue-600 font-semibold hover:underline">
+                <a href="{{ route('register') }}" class="text-blue-600 font-semibold hover:underline">
                     Sign up
-                </flux:link>
+                </a>
             </div>
         @endif
     </div>

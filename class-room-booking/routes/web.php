@@ -7,17 +7,31 @@ use App\Livewire\Settings\Profile;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\KalenderController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
-
-
+// Home
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Dashboard (protected)
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+// Authentication Routes
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
+
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+    ->middleware('guest');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
+
+// Protected Routes
 Route::middleware(['auth'])->group(function () {
     // Settings
     Route::redirect('settings', 'settings/profile');
@@ -28,19 +42,18 @@ Route::middleware(['auth'])->group(function () {
     // ✅ Ruangan
     Route::resource('ruangan', RuanganController::class);
     
-
     // ✅ Booking
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
     Route::resource('booking', BookingController::class); // ini wajib ada
 
-
-    // ✅ Tambahkan ini untuk riwayat booking
+    // ✅ Riwayat Booking
     Route::get('/riwayat-booking', [BookingController::class, 'riwayat'])->name('booking.riwayat');
     
     // ✅ Kalender
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
 });
 
+// Include auth routes
 require __DIR__ . '/auth.php';
