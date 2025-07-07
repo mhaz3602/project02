@@ -8,10 +8,15 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
+
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    const ROLE_Mahasiswa = 'mahasiswa';
+    const ROLE_Admin = 'admin';
+
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +27,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**

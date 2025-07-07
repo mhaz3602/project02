@@ -62,3 +62,37 @@ Route::middleware(['auth'])->group(function () {
 
 // Include auth routes
 require __DIR__ . '/auth.php';
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+      // 🏢 CRUD Ruangan
+    Route::resource('/admin/ruangan', RuanganController::class)->names([
+        'index' => 'admin.ruangan.index',
+        'create' => 'admin.ruangan.create',
+        'store' => 'admin.ruangan.store',
+        'show' => 'admin.ruangan.show',
+        'edit' => 'admin.ruangan.edit',
+        'update' => 'admin.ruangan.update',
+        'destroy' => 'admin.ruangan.destroy',
+    ]);
+
+    // ✅ Validasi Peminjaman Ruangan
+    Route::get('/admin/validasi-booking', [BookingController::class, 'validasiIndex'])->name('booking.validasi');
+    Route::post('/admin/validasi-booking/{id}/setujui', [BookingController::class, 'setujui'])->name('booking.setujui');
+    Route::post('/admin/validasi-booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+
+    // 📅 Lihat Kalender Semua Booking
+    Route::get('/admin/kalender', [KalenderController::class, 'adminKalender'])->name('admin.kalender');
+
+    // 📖 Riwayat Semua Peminjaman
+    Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('booking.riwayat');
+
+    // 📄 Laporan Peminjaman (misalnya dengan filter tanggal)
+    Route::get('/admin/laporan-peminjaman', [LaporanController::class, 'index'])->name('laporan.peminjaman');
+    Route::post('/admin/laporan-peminjaman/cetak', [LaporanController::class, 'cetak'])->name('laporan.peminjaman.cetak');
+});
+
+
