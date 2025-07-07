@@ -69,13 +69,24 @@ class BookingController extends Controller
         return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil diajukan!');
     }
 
-    public function riwayat()
+    public function riwayat(Request $request)
     {
-        $riwayat = Booking::with('ruangan')->orderByDesc('created_at')->get();
+        $query = Booking::with('ruangan')->orderByDesc('created_at');
+
+        // Filter jika ada
+        if ($request->filled('tanggal')) {
+            $query->where('tanggal', $request->tanggal);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $riwayat = $query->get();
+
         return view('booking.riwayat', compact('riwayat'));
     }
 
-    // Tambahan resource method jika perlu
     public function show(Booking $booking)
     {
         return view('booking.show', compact('booking'));
@@ -88,7 +99,16 @@ class BookingController extends Controller
 
     public function update(Request $request, Booking $booking)
     {
+        $request->validate([
+            'tanggal' => 'required|date',
+            'jam_mulai' => 'required',
+            'jam_selesai' => 'required|after:jam_mulai',
+            'keperluan' => 'required|string|max:100',
+            'status' => 'in:pending,disetujui,ditolak,batal,selesai'
+        ]);
+
         $booking->update($request->all());
+
         return redirect()->route('booking.index')->with('success', 'Booking diperbarui.');
     }
 
