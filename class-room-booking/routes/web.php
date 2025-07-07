@@ -8,6 +8,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\KalenderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 // Home
 Route::get('/', function () {
@@ -53,6 +54,10 @@ Route::middleware(['auth'])->group(function () {
     
     // ✅ Kalender
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
+
+    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'store']);
+
 });
 
 // Include auth routes
