@@ -30,4 +30,4 @@
         <a href="{{ route('ruangan.index') }}" class="btn btn-secondary mt-3">Kembali</a>
     </form>
 </div>
-@endsection
+@endsectio

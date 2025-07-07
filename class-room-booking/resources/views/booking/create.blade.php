@@ -1,11 +1,5 @@
 <x-layouts.app title="Booking Ruangan">
     <div class="max-w-4xl mx-auto py-10 px-6">
-        
-        <!-- Judul Halaman -->
-        <div class="text-center mb-10">
-            <h1 class="text-3xl font-bold text-blue-700 mb-2">📅 Formulir Booking Ruangan</h1>
-            <p class="text-gray-500 text-sm">Isi data berikut untuk meminjam ruangan sesuai kebutuhan kegiatanmu!</p>
-        </div>
 
         <!-- Info Ruangan Terpilih -->
         @if(isset($ruanganTerpilih))

@@ -28,18 +28,20 @@
 
             {{-- KANAN: DESKRIPSI --}}
             <div>
-                <h2 class="text-3xl font-bold text-blue-900 mb-4">Halo Mahasiswa 👋</h2>
+                <h2 class="text-3xl font-extrabold text-blue-800 mb-4 drop-shadow">
+                    Halo Mahasiswa 👋
+                </h2>
 
                 <p class="text-gray-700 text-base mb-6 leading-relaxed text-justify">
-                    Aplikasi ini hadir sebagai solusi simpel dan cerdas untuk kamu yang butuh ruangan buat kegiatan akademik maupun non-akademik. Mulai dari diskusi kelompok, seminar/workshop mini, hingga rapat mendadak bareng dosen atau teman-teman organisasi, semua bisa kamu atur lewat sistem ini tanpa ribet! 🎯📚
+                    Aplikasi ini hadir sebagai solusi simpel dan cerdas untuk kamu yang butuh ruangan untuk kegiatan akademik maupun non-akademik. Mulai dari diskusi kelompok, seminar/workshop mini, hingga rapat mendadak bareng dosen atau teman-teman organisasi, semua bisa kamu atur lewat sistem ini tanpa ribet! 📚
                 </p>
 
                 {{-- Quotes --}}
-                <blockquote class="italic text-sm text-gray-500 bg-gray-100 px-4 py-2 rounded-md mb-6 border-l-4 border-blue-400">
+                <blockquote class="italic text-sm text-gray-500 bg-blue-50 px-4 py-2 rounded-md mb-6 border-l-4 border-blue-400">
                     “Belajar itu berat... Tapi rebutan ruangan lebih berat.” 😅
                 </blockquote>
 
-                <h4 class="text-xl font-semibold mb-3 text-gray-800">Syarat Peminjaman:</h4>
+                <h4 class="text-xl font-semibold mb-3 text-blue-700">Syarat Peminjaman:</h4>
                 <ul class="space-y-2 text-gray-700">
                     @foreach ([ 
                         'Mahasiswa aktif STT-NF',
@@ -60,7 +62,7 @@
                 {{-- Tombol ke Halaman Ruangan --}}
                 <div class="mt-6">
                     <a href="{{ route('ruangan.index') }}"
-                       class="inline-block bg-blue-600 text-white px-6 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition">
+                       class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-2 rounded-xl text-sm font-semibold shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-300">
                         🚀 Booking Sekarang →
                     </a>
                 </div>

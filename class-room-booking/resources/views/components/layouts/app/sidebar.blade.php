@@ -18,21 +18,18 @@
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')" class="grid">
-                <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate
-                    class="transition-all duration-200 hover:bg-blue-100/40"
-                    :class="request()->routeIs('dashboard') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                <flux:navlist.item :href="route('dashboard')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40 text-blue-600">
                     🏠 Dashboard
                 </flux:navlist.item>
 
-                <flux:navlist.item icon="building-library" :href="route('ruangan.index')" :current="request()->routeIs('ruangan.index')" wire:navigate
-                    class="transition-all duration-200 hover:bg-blue-100/40"
-                    :class="request()->routeIs('ruangan.index') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                <flux:navlist.item :href="route('ruangan.index')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40 text-blue-600">
                     🏢 Ruangan
                 </flux:navlist.item>
 
-                <flux:navlist.item icon="calendar" :href="route('kalender')" :current="request()->routeIs('kalender')" wire:navigate
-                    class="transition-all duration-200 hover:bg-blue-100/40"
-                    :class="request()->routeIs('kalender') ? 'bg-blue-200 text-blue-900 font-semibold' : ''">
+                <flux:navlist.item :href="route('kalender')" wire:navigate
+                    class="transition-all duration-200 hover:bg-blue-100/40 text-blue-600">
                     📆 Kalender
                 </flux:navlist.item>
             </flux:navlist.group>
@@ -41,12 +38,12 @@
         <flux:spacer />
 
         <flux:navlist variant="outline">
-            <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
+            <flux:navlist.item href="https://github.com/laravel/livewire-starter-kit" target="_blank" class="text-blue-600">
+                📂 {{ __('Repository') }}
             </flux:navlist.item>
 
-            <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                {{ __('Documentation') }}
+            <flux:navlist.item href="https://laravel.com/docs/starter-kits#livewire" target="_blank" class="text-blue-600">
+                📖 {{ __('Documentation') }}
             </flux:navlist.item>
         </flux:navlist>
 

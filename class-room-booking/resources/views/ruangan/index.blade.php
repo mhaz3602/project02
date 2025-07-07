@@ -16,7 +16,18 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             @forelse($ruangan as $r)
                 @php
-                    $emoji = ['🏫','🏫','🧑‍🏫','🧑‍🏫','🧑‍🏫','🖥️','🖥️','🧑‍🏫','🛋️','🏢','🧑‍🏫'][($loop->index % 11)];
+                    if (Str::contains(Str::lower($r->nama), ['kelas'])) {
+                        $emoji = '🏫';
+                    } elseif (Str::contains(Str::lower($r->nama), ['rapat', 'dosen'])) {
+                        $emoji = '👨‍🏫';
+                    } elseif (Str::contains(Str::lower($r->nama), ['audit', 'auditorium'])) {
+                        $emoji = '🎤';
+                    } elseif (Str::contains(Str::lower($r->nama), ['rooftop', 'perpus', 'library'])) {
+                        $emoji = '📚';
+                    } else {
+                        $emoji = '🏢';
+                    }
+
                     $badge = $r->kapasitas >= 100 ? 'bg-red-100 text-red-600' :
                              ($r->kapasitas >= 40 ? 'bg-yellow-100 text-yellow-700' :
                              'bg-green-100 text-green-700');
