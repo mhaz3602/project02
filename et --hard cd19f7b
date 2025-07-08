@@ -1,0 +1,58 @@
+[33maeda00e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33mbc925bd[m membuat fitur kelola ruangan untuk di admin
+[33m1ff52fa[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33mc3f004d[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33m89314aa[m menyesuaikan kalender dengan validasi dari si admin
+[33mce724d4[m membuat validasi ruangan di admin
+[33ma9d71e9[m update
+[33ma0bcf9a[m memperbaiki riwayat pinjaman di user
+[33m42e0108[m balikin dashboard admin versi temen
+[33mcd28682[m update diba benerin register
+[33m92afd18[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33m8937598[m membuat role admin suci
+[33m0f47d65[m update diba
+[33mcd19f7b[m mendesain tampilan riwayat dan sidebar
+[33m1d95f05[m update
+[33m33211bb[m update
+[33mf7e7219[m update
+[33m5557071[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33m2ecaa65[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33m5a96d01[m Update diba
+[33m72cdf89[m Fix merge conflict in web.php
+[33m6bb9e83[m ngebuat riwayat booking dan nghubungi ke kalender
+[33m3615067[m memperbagus tampilan regisrter diba updte
+[33m442111c[m Update tampilan gagal login diba
+[33m6f84c27[m update
+[33m4d71ec3[m desain tampilan sidebar,kalender, dan ruangan
+[33ma793272[m update
+[33m8670778[m desain tampilan dashboard
+[33m406b5c9[m update tampilan login diba
+[33mef83626[m update kalender suci
+[33m18d0149[m Update ruangan, dan sedikit bagian login diba
+[33m3bc43c3[m form booking suci
+[33mca26c42[m update ruangan dan dashboard suci
+[33mbcbf7da[m mencoba benerin kalender
+[33m4bf45e4[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33mf705fa6[m Update Diba
+[33mdc6f6ee[m Update Diba
+[33m20acd1a[m feat: tambah fitur riwayat booking dan edit booking
+[33m4d8275f[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33mb553a63[m kalender
+[33m161f5f1[m kalender
+[33m9598888[m seeder mahasiswa
+[33m4fd11d3[m new seeder
+[33m9bc5992[m seeder
+[33m079b533[m kalender
+[33mbcfb103[m kalender
+[33m723ea9d[m nambahin db di env.example
+[33m4cfb9f9[m nambahin db di env.example
+[33m8b2917a[m Merge branch 'main' of https://github.com/mhaz3602/project02
+[33m3250412[m env
+[33m4139199[m Selesai semua konflik merge termasuk web.php
+[33m00a9f64[m Simpan perubahan sebelum pull
+[33m72c9eec[m perubahan env
+[33m8486f04[m Update .env.example
+[33m39310f4[m Membuat fitur kalender
+[33m3ffdd55[m update suci
+[33m632d02d[m update suci
+[33m4f3cd06[m inisiasi project laravel & filament
