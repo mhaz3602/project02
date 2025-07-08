@@ -9,7 +9,11 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    const ROLE_Mahasiswa = 'mahasiswa';
+    const ROLE_Admin = 'admin';
 
     /**
      * Kolom-kolom yang boleh diisi secara massal
@@ -20,6 +24,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
