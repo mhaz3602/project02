@@ -15,11 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Dashboard (protected)
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
 // Authentication Routes
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
     ->middleware('guest')
@@ -32,8 +27,17 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-// Protected Routes
+// ✅ REGISTER (pindah keluar dari group auth)
+Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
+
+// ✅ Protected Routes (hanya untuk user login)
 Route::middleware(['auth'])->group(function () {
+    // ✅ Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
     // Settings
     Route::redirect('settings', 'settings/profile');
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -47,18 +51,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    Route::resource('booking', BookingController::class); // ini wajib ada
+    Route::resource('booking', BookingController::class);
 
     // ✅ Riwayat Booking
     Route::get('/riwayat-booking', [BookingController::class, 'riwayat'])->name('booking.riwayat');
     
     // ✅ Kalender
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
-
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'store']);
-
 });
 
-// Include auth routes
+// Include auth routes (Livewire, Fortify, etc)
 require __DIR__ . '/auth.php';
