@@ -16,7 +16,7 @@
            class="me-5 mb-4 flex items-center space-x-3 px-4 rtl:space-x-reverse" wire:navigate>
             <x-app-logo class="w-8 h-8" />
             <div class="text-xl font-bold tracking-tight text-blue-700 dark:text-white">
-                Booking Ruangan
+                RuangNF
             </div>
         </a>
 
@@ -33,14 +33,14 @@
                     class="{{ request()->routeIs('ruangan.*') 
                         ? 'bg-blue-600 text-white font-semibold' 
                         : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
-                    🏢 Manajemen Ruangan
+                    🏢 Ruangan
                 </flux:navlist.item>
 
                 <flux:navlist.item :href="route('kalender')" wire:navigate
                     class="{{ request()->routeIs('kalender') 
                         ? 'bg-blue-600 text-white font-semibold' 
                         : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
-                    📆 Kalender Booking
+                    📆 Kalender Booking 
                 </flux:navlist.item>
 
                 <flux:navlist.item :href="route('booking.riwayat')" wire:navigate
@@ -80,12 +80,12 @@
                 </div>
                 <flux:menu.separator />
                 <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
-                    ⚙️ Pengaturan Akun
+                    Pengaturan Akun
                 </flux:menu.item>
                 <form method="POST" action="{{ route('logout') }}" class="w-full">
                     @csrf
                     <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                        🚪 Keluar
+                        Keluar
                     </flux:menu.item>
                 </form>
             </flux:menu>
@@ -100,12 +100,12 @@
             <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
             <flux:menu>
                 <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
-                    ⚙️ Pengaturan
+                    Pengaturan
                 </flux:menu.item>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle">
-                        🚪 Keluar
+                        Keluar
                     </flux:menu.item>
                 </form>
             </flux:menu>
