@@ -38,8 +38,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return auth()->user()->isAdmin()
+            ? view('admin.dashboard')
+            : view('dashboard');
     })->name('dashboard');
+
 
     // Settings
     Route::redirect('settings', 'settings/profile');

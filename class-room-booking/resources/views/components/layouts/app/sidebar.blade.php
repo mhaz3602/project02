@@ -15,7 +15,7 @@
         <flux:sidebar.toggle class="lg:hidden mb-4" icon="x-mark" />
 
         <!-- Logo & Judul -->
-        <a href="{{ route('dashboard') }}" 
+        <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}" 
            class="me-5 mb-4 flex items-center space-x-3 px-4 rtl:space-x-reverse" wire:navigate>
             <x-app-logo class="w-8 h-8" />
             <div class="text-xl font-bold tracking-tight text-blue-700 dark:text-white">
