@@ -117,4 +117,22 @@ class BookingController extends Controller
         $booking->delete();
         return redirect()->route('booking.index')->with('success', 'Booking dihapus.');
     }
+
+    public function riwayatAdmin(Request $request)
+{
+    $query = Booking::with('ruangan')->orderByDesc('created_at');
+
+    if ($request->filled('tanggal')) {
+        $query->where('tanggal', $request->tanggal);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    $riwayat = $query->get();
+
+    return view('admin.booking.riwayat-admin', compact('riwayat'));
+}
+
 }

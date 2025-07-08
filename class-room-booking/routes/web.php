@@ -9,31 +9,34 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\KalenderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\LaporanController;
+
+// =======================
+// Public (Guest) Routes
+// =======================
 
 // Home
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Authentication Routes
-Route::get('/login', [AuthenticatedSessionController::class, 'create'])
-    ->middleware('guest')
-    ->name('login');
+// Login
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
 
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-    ->middleware('guest');
-
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
-
-// ✅ REGISTER (pindah keluar dari group auth)
+// Register
 Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
 
-// ✅ Protected Routes (hanya untuk user login)
+// Logout
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
+
+// =======================
+// Authenticated Routes
+// =======================
 Route::middleware(['auth'])->group(function () {
-    // ✅ Dashboard
+
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
@@ -44,31 +47,36 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
-    // ✅ Ruangan
+    // CRUD Ruangan (Umum)
     Route::resource('ruangan', RuanganController::class);
-    
-    // ✅ Booking
+
+    // Booking
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    Route::resource('booking', BookingController::class);
+    Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/booking/{booking}/edit', [BookingController::class, 'edit'])->name('booking.edit');
+    Route::put('/booking/{booking}', [BookingController::class, 'update'])->name('booking.update');
+    Route::delete('/booking/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');
 
-    // ✅ Riwayat Booking
+    // Riwayat Booking (User)
     Route::get('/riwayat-booking', [BookingController::class, 'riwayat'])->name('booking.riwayat');
-    
-    // ✅ Kalender
+
+    // Kalender Booking (User)
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
 });
 
-// Include auth routes (Livewire, Fortify, etc)
-require __DIR__ . '/auth.php';
-
+// =======================
+// Admin Routes
+// =======================
 Route::middleware(['auth', 'admin'])->group(function () {
+
+    // Admin Dashboard
     Route::get('/admin', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-      // 🏢 CRUD Ruangan
+    // CRUD Ruangan (Admin)
     Route::resource('/admin/ruangan', RuanganController::class)->names([
         'index' => 'admin.ruangan.index',
         'create' => 'admin.ruangan.create',
@@ -79,20 +87,23 @@ Route::middleware(['auth', 'admin'])->group(function () {
         'destroy' => 'admin.ruangan.destroy',
     ]);
 
-    // ✅ Validasi Peminjaman Ruangan
+    // Validasi Peminjaman
     Route::get('/admin/validasi-booking', [BookingController::class, 'validasiIndex'])->name('booking.validasi');
     Route::post('/admin/validasi-booking/{id}/setujui', [BookingController::class, 'setujui'])->name('booking.setujui');
     Route::post('/admin/validasi-booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
 
-    // 📅 Lihat Kalender Semua Booking
+    // Kalender Booking Admin
     Route::get('/admin/kalender', [KalenderController::class, 'adminKalender'])->name('admin.kalender');
 
-    // 📖 Riwayat Semua Peminjaman
-    Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('booking.riwayat');
+    // Riwayat Booking Admin
+    Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('admin.booking.riwayat');
 
-    // 📄 Laporan Peminjaman (misalnya dengan filter tanggal)
+    // Laporan Booking
     Route::get('/admin/laporan-peminjaman', [LaporanController::class, 'index'])->name('laporan.peminjaman');
     Route::post('/admin/laporan-peminjaman/cetak', [LaporanController::class, 'cetak'])->name('laporan.peminjaman.cetak');
 });
 
-
+// =======================
+// Livewire / Fortify etc
+// =======================
+require __DIR__ . '/auth.php';
