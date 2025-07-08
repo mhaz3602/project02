@@ -22,6 +22,7 @@
 
         <flux:navlist variant="outline">
             <flux:navlist.group heading="🧭 Navigasi Utama" class="px-2 pt-2 text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+
                 <flux:navlist.item :href="route('dashboard')" wire:navigate
                     class="{{ request()->routeIs('dashboard') 
                         ? 'bg-blue-600 text-white font-semibold' 
@@ -49,6 +50,16 @@
                         : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
                     📄 Riwayat Peminjaman
                 </flux:navlist.item>
+
+                @if (auth()->user()->isAdmin())
+                    <flux:navlist.item :href="route('booking.validasi')" wire:navigate
+                        class="{{ request()->routeIs('booking.validasi') 
+                            ? 'bg-blue-600 text-white font-semibold' 
+                            : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
+                        ✅ Validasi Peminjaman
+                    </flux:navlist.item>
+                @endif
+
             </flux:navlist.group>
         </flux:navlist>
 

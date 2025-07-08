@@ -39,7 +39,6 @@ class BookingController extends Controller
             'keperluan' => 'required|string|max:100',
         ]);
 
-        // Cek bentrok booking
         $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
             ->where('tanggal', $request->tanggal)
             ->where(function ($query) use ($request) {
@@ -52,10 +51,9 @@ class BookingController extends Controller
             return back()->with('error', 'Jadwal bentrok dengan booking lain.');
         }
 
-        // Simpan data booking
         Booking::create([
             'id_ruangan' => $request->id_ruangan,
-            'id_mahasiswa' => Auth::id(), // pastikan user login
+            'id_mahasiswa' => Auth::id(),
             'nama' => $request->nama,
             'nim' => $request->nim,
             'no_telp' => $request->no_telp,
@@ -73,7 +71,6 @@ class BookingController extends Controller
     {
         $query = Booking::with('ruangan')->orderByDesc('created_at');
 
-        // Filter jika ada
         if ($request->filled('tanggal')) {
             $query->where('tanggal', $request->tanggal);
         }
@@ -104,7 +101,7 @@ class BookingController extends Controller
             'jam_mulai' => 'required',
             'jam_selesai' => 'required|after:jam_mulai',
             'keperluan' => 'required|string|max:100',
-            'status' => 'in:pending,disetujui,ditolak,batal,selesai'
+            'status' => 'required|in:pending,disetujui,ditolak,batal,selesai',
         ]);
 
         $booking->update($request->all());
@@ -118,21 +115,64 @@ class BookingController extends Controller
         return redirect()->route('booking.index')->with('success', 'Booking dihapus.');
     }
 
+    // === Admin Fitur ===
+
     public function riwayatAdmin(Request $request)
-{
-    $query = Booking::with('ruangan')->orderByDesc('created_at');
+    {
+        $query = Booking::with('ruangan')->orderByDesc('created_at');
 
-    if ($request->filled('tanggal')) {
-        $query->where('tanggal', $request->tanggal);
+        if ($request->filled('tanggal')) {
+            $query->where('tanggal', $request->tanggal);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $riwayat = $query->get();
+
+        return view('admin.booking.riwayat-admin', compact('riwayat'));
     }
 
-    if ($request->filled('status')) {
-        $query->where('status', $request->status);
+    public function validasiIndex()
+    {
+        $bookings = Booking::with('ruangan')
+            ->where('status', 'pending')
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('admin.validasi-booking', compact('bookings'));
     }
 
-    $riwayat = $query->get();
+    public function setujui($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->update(['status' => 'disetujui']);
 
-    return view('admin.booking.riwayat-admin', compact('riwayat'));
-}
+        return redirect()->back()->with('success', 'Booking disetujui.');
+    }
 
+    public function tolak($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->update(['status' => 'ditolak']);
+
+        return redirect()->back()->with('success', 'Booking ditolak.');
+    }
+
+    public function selesai($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->update(['status' => 'selesai']);
+
+        return redirect()->back()->with('success', 'Booking ditandai selesai.');
+    }
+
+    public function batal($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->update(['status' => 'batal']);
+
+        return redirect()->back()->with('success', 'Booking telah dibatalkan.');
+    }
 }

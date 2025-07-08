@@ -13,11 +13,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            abort(403, 'Anda tidak memiliki akses sebagai admin.');
         }
 
-        // Kalau bukan admin, tolak akses
-        abort(403, 'Anda tidak memiliki akses sebagai admin.');
+        return $next($request);
     }
 }

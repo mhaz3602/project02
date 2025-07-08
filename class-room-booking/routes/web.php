@@ -47,10 +47,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
-    // CRUD Ruangan (Umum)
+    // CRUD Ruangan (User)
     Route::resource('ruangan', RuanganController::class);
 
-    // Booking
+    // Booking (User)
     Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
     Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
@@ -59,11 +59,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/booking/{booking}', [BookingController::class, 'update'])->name('booking.update');
     Route::delete('/booking/{booking}', [BookingController::class, 'destroy'])->name('booking.destroy');
 
-    // Riwayat Booking (User)
+    // Riwayat & Kalender (User)
     Route::get('/riwayat-booking', [BookingController::class, 'riwayat'])->name('booking.riwayat');
-
-    // Kalender Booking (User)
     Route::get('/kalender', [KalenderController::class, 'index'])->name('kalender');
+
+    // Ganti Role (Admin <-> Mahasiswa)
+    Route::post('/switch-role', function () {
+        $user = auth()->user();
+        $newRole = $user->isAdmin() ? 'mahasiswa' : 'admin';
+        $user->update(['role' => $newRole]);
+
+        return redirect()->back()->with('success', 'Role berhasil diganti menjadi ' . ucfirst($newRole));
+    })->name('switch-role');
 });
 
 // =======================
@@ -71,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
 // =======================
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    // Admin Dashboard
+    // Dashboard Admin
     Route::get('/admin', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
@@ -91,14 +98,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/validasi-booking', [BookingController::class, 'validasiIndex'])->name('booking.validasi');
     Route::post('/admin/validasi-booking/{id}/setujui', [BookingController::class, 'setujui'])->name('booking.setujui');
     Route::post('/admin/validasi-booking/{id}/tolak', [BookingController::class, 'tolak'])->name('booking.tolak');
+    Route::post('/admin/validasi-booking/{id}/selesai', [BookingController::class, 'selesai'])->name('booking.selesai');
+    Route::post('/admin/validasi-booking/{id}/batal', [BookingController::class, 'batal'])->name('booking.batal');
 
-    // Kalender Booking Admin
+
+    // Kalender, Riwayat, Laporan
     Route::get('/admin/kalender', [KalenderController::class, 'adminKalender'])->name('admin.kalender');
-
-    // Riwayat Booking Admin
     Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('admin.booking.riwayat');
 
-    // Laporan Booking
     Route::get('/admin/laporan-peminjaman', [LaporanController::class, 'index'])->name('laporan.peminjaman');
     Route::post('/admin/laporan-peminjaman/cetak', [LaporanController::class, 'cetak'])->name('laporan.peminjaman.cetak');
 });

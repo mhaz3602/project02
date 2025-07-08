@@ -9,17 +9,11 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     const ROLE_Mahasiswa = 'mahasiswa';
     const ROLE_Admin = 'admin';
 
-    /**
-     * Kolom-kolom yang boleh diisi secara massal
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -27,21 +21,11 @@ class User extends Authenticatable
         'role',
     ];
 
-    /**
-     * Kolom-kolom yang disembunyikan saat serialisasi
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Kolom-kolom yang perlu casting tipe data
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -54,7 +38,23 @@ class User extends Authenticatable
         return Str::of($this->name)
             ->explode(' ')
             ->take(2)
-            ->map(fn ($word) => Str::substr($word, 0, 1))
+            ->map(fn($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Cek apakah user adalah admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_Admin;
+    }
+
+    /**
+     * Cek apakah user adalah mahasiswa
+     */
+    public function isMahasiswa(): bool
+    {
+        return $this->role === self::ROLE_Mahasiswa;
     }
 }
