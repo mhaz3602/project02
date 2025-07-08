@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Booking; // pastikan model Booking sudah diimport
+use App\Models\Booking;
 use Carbon\Carbon;
 
 class KalenderController extends Controller
@@ -15,13 +15,14 @@ class KalenderController extends Controller
 
         $tanggal = Carbon::createFromDate($tahun, $bulan, 1);
 
-        // Ambil semua booking di bulan dan tahun yang dipilih
+        // Ambil hanya booking yang disetujui
         $bookings = Booking::whereMonth('tanggal', $bulan)
-                           ->whereYear('tanggal', $tahun)
-                           ->get()
-                           ->groupBy(function ($item) {
-                               return Carbon::parse($item->tanggal)->day; // Kelompokkan berdasarkan tanggal
-                           });
+            ->whereYear('tanggal', $tahun)
+            ->where('status', 'disetujui')
+            ->get()
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->tanggal)->day;
+            });
 
         return view('kalender.index', compact('tanggal', 'bookings'));
     }
