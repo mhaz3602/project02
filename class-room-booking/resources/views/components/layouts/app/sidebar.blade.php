@@ -1,3 +1,5 @@
+@php use Illuminate\Support\Str; @endphp
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 <head>
@@ -12,6 +14,7 @@
 
         <flux:sidebar.toggle class="lg:hidden mb-4" icon="x-mark" />
 
+        <!-- Logo & Judul -->
         <a href="{{ route('dashboard') }}" 
            class="me-5 mb-4 flex items-center space-x-3 px-4 rtl:space-x-reverse" wire:navigate>
             <x-app-logo class="w-8 h-8" />
@@ -20,6 +23,7 @@
             </div>
         </a>
 
+        <!-- Navigasi Utama -->
         <flux:navlist variant="outline">
             <flux:navlist.group heading="🧭 Navigasi Utama" class="px-2 pt-2 text-sm font-semibold text-zinc-500 dark:text-zinc-400">
 
@@ -58,11 +62,19 @@
                             : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
                         ✅ Validasi Peminjaman
                     </flux:navlist.item>
+
+                    <flux:navlist.item :href="route('admin.ruangan.index')" wire:navigate
+                        class="{{ str_starts_with(Route::currentRouteName(), 'admin.ruangan.') 
+                            ? 'bg-blue-600 text-white font-semibold' 
+                            : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
+                        ⚙️ Kelola Ruangan
+                    </flux:navlist.item>
                 @endif
 
             </flux:navlist.group>
         </flux:navlist>
 
+        <!-- Eksternal -->
         <flux:spacer />
 
         <flux:navlist variant="outline">
@@ -76,6 +88,7 @@
             </flux:navlist.group>
         </flux:navlist>
 
+        <!-- Footer -->
         <div class="text-xs text-center text-gray-400 px-4 pb-4 mt-auto">
             <hr class="my-3 border-gray-300 dark:border-zinc-700" />
             <p>© {{ date('Y') }} STT-NF | v1.0</p>
@@ -123,6 +136,7 @@
         </flux:dropdown>
     </flux:header>
 
+    <!-- Konten Halaman -->
     {{ $slot }}
 
     @fluxScripts

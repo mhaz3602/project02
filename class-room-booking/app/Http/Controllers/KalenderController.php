@@ -18,7 +18,7 @@ class KalenderController extends Controller
         // Ambil hanya booking yang disetujui
         $bookings = Booking::whereMonth('tanggal', $bulan)
             ->whereYear('tanggal', $tahun)
-            ->where('status', 'disetujui')
+            ->where('status', 'disetujui') // hanya yang disetujui tampil di kalender
             ->get()
             ->groupBy(function ($item) {
                 return Carbon::parse($item->tanggal)->day;
