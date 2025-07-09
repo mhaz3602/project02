@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- Judul halaman yang akan muncul di tab browser saat mencetak --}}
     <title>Laporan Statistik Peminjaman Bulanan - {{ \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->format('F Y') }}</title>
     {{-- Memuat Tailwind CSS dari CDN untuk tampilan cetak --}}
     <script src="https://cdn.tailwindcss.com"></script>
@@ -90,7 +89,8 @@
         {{-- Bagian Statistik Ringkasan --}}
         <section class="mb-8">
             <h2 class="text-xl font-semibold text-blue-700 mb-4">Statistik Ringkasan</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 text-center">
+            {{-- Grid dari 5 kolom diubah menjadi 4 kolom karena 'Selesai' dihapus --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 text-center">
                 <div class="p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-200">
                     <p class="text-2xl font-bold text-blue-700">{{ $summary['total_bookings'] }}</p>
                     <p class="text-sm text-zinc-500">Total Peminjaman</p>
@@ -103,10 +103,14 @@
                     <p class="text-2xl font-bold text-yellow-700">{{ $summary['status_counts']['pending'] }}</p>
                     <p class="text-sm text-zinc-500">Pending</p>
                 </div>
+                {{-- Peminjaman Selesai (DIHAPUS) --}}
+                {{--
                 <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
                     <p class="text-2xl font-bold text-gray-700">{{ $summary['status_counts']['selesai'] }}</p>
                     <p class="text-sm text-zinc-500">Selesai</p>
                 </div>
+                --}}
+                {{-- Peminjaman Dibatalkan (termasuk Ditolak) --}}
                 <div class="p-4 bg-red-50 rounded-lg shadow-sm border border-red-200">
                     <p class="text-2xl font-bold text-red-700">{{ $summary['status_counts']['dibatalkan'] }}</p>
                     <p class="text-sm text-zinc-500">Dibatalkan</p>
@@ -156,7 +160,8 @@
                                 <td>{{ \Carbon\Carbon::parse($booking->tanggal)->format('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
                                 <td>{{ $booking->ruangan->nama }}</td>
-                                <td>{{ $booking->nama }}</td>
+                                <td>{{ $booking->mahasiswa->nama }}</td>
+                                <td>{{ $booking->mahasiswa->NIM }}</td>
                                 <td>{{ $booking->keperluan }}</td>
                                 <td>
                                     @php
@@ -164,8 +169,9 @@
                                         switch($booking->status) {
                                             case 'disetujui': $badge_class = 'badge-success'; break;
                                             case 'dibatalkan': $badge_class = 'badge-danger'; break;
-                                            case 'selesai': $badge_class = 'badge-info'; break;
+                                            case 'selesai': $badge_class = 'badge-info'; break; // Ini tidak akan terpakai lagi di data
                                             case 'pending': $badge_class = 'badge-warning'; break;
+                                            case 'ditolak': $badge_class = 'badge-danger'; break; // Tambahkan ini jika status 'ditolak' masih ada di DB dan ingin ditampilkan secara spesifik di tabel
                                             default: $badge_class = 'badge-secondary'; break;
                                         }
                                     @endphp

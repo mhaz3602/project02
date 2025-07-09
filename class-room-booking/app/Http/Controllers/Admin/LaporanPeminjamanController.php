@@ -53,15 +53,20 @@ class LaporanPeminjamanController extends Controller
         $totalBookings = $bookings->count();
         $statusCounts = $bookings->groupBy('status')->map->count();
 
-        // Inisialisasi semua status agar selalu ada, meskipun jumlahnya 0
+        // --- Logika Revisi Status ---
+        // Inisialisasi status yang relevan
         $summaryStatus = [
             'disetujui' => $statusCounts->get('disetujui', 0),
-            'dibatalkan' => $statusCounts->get('dibatalkan', 0),
-            'selesai' => $statusCounts->get('selesai', 0),
+            'dibatalkan' => 0, // Akan diisi dari 'dibatalkan' dan 'ditolak'
             'pending' => $statusCounts->get('pending', 0),
+            // 'selesai' dihapus karena tidak digunakan
         ];
 
+        // Gabungkan 'ditolak' ke dalam 'dibatalkan'
+        $summaryStatus['dibatalkan'] = $statusCounts->get('dibatalkan', 0) + $statusCounts->get('ditolak', 0);
+
         // Menemukan ruangan paling sering dipinjam
+        /** @var string|null $mostBookedRoom */ // <-- TAMBAHKAN BARIS INI
         $mostBookedRoom = null;
         $roomCounts = $bookings->groupBy('ruangan.nama')->map->count();
         if ($roomCounts->isNotEmpty()) {
@@ -73,9 +78,9 @@ class LaporanPeminjamanController extends Controller
         $statusChartData = array_values($summaryStatus); // Data: Jumlah masing-masing status
         $statusChartColors = [
             '#4CAF50', // Hijau untuk disetujui
-            '#F44336', // Merah untuk dibatalkan
-            '#2196F3', // Biru untuk selesai
+            '#F44336', // Merah untuk dibatalkan (termasuk ditolak)
             '#FFC107', // Kuning untuk pending
+            // Warna untuk 'selesai' dihapus
         ];
 
         // --- Data untuk Grafik Peminjaman Harian (Bar Chart) ---

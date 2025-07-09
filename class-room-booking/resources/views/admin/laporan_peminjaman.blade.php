@@ -1,12 +1,12 @@
 {{-- Menggunakan komponen layout utama aplikasi Anda --}}
 <x-layouts.app>
 
-    {{-- Judul halaman laporan yang akan muncul di tab browser --}}
+    {{-- Judul halaman laporan --}}
     @section('title', 'Laporan Statistik Peminjaman Bulanan') 
 
     {{-- Konten utama halaman laporan --}}
     <div class="p-4 sm:p-6 lg:p-8 space-y-6"> {{-- Padding dan spacing responsif --}}
-        <h1 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Laporan Statistik Peminjaman Bulanan</h1> {{-- Nama disesuaikan --}}
+        <h1 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Laporan Statistik Peminjaman Bulanan</h1>
 
         {{-- Card Filter Laporan --}}
         <div class="bg-white dark:bg-zinc-800 shadow-md rounded-lg p-6">
@@ -57,7 +57,8 @@
         {{-- Bagian Statistik Ringkasan --}}
         <div class="bg-white dark:bg-zinc-800 shadow-md rounded-lg p-6">
             <h6 class="text-lg font-semibold text-blue-700 dark:text-blue-400 mb-4">Statistik Ringkasan Peminjaman</h6>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 text-center">
+            {{-- Grid dari 5 kolom diubah menjadi 4 kolom karena 'Selesai' dihapus --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 text-center"> 
                 {{-- Total Peminjaman --}}
                 <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg shadow-sm">
                     <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">{{ $summary['total_bookings'] }}</p>
@@ -73,16 +74,18 @@
                     <p class="text-2xl font-bold text-yellow-700 dark:text-yellow-300">{{ $summary['status_counts']['pending'] }}</p>
                     <p class="text-sm text-zinc-500 dark:text-zinc-400">Pending</p>
                 </div>
-                {{-- Peminjaman Selesai --}}
-                <div class="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg shadow-sm">
-                    <p class="text-2xl font-bold text-gray-700 dark:text-gray-300">{{ $summary['status_counts']['selesai'] }}</p>
-                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Selesai</p>
-                </div>
-                {{-- Peminjaman Dibatalkan --}}
+                {{-- Peminjaman Dibatalkan (termasuk Ditolak) --}}
                 <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg shadow-sm">
                     <p class="text-2xl font-bold text-red-700 dark:text-red-300">{{ $summary['status_counts']['dibatalkan'] }}</p>
                     <p class="text-sm text-zinc-500 dark:text-zinc-400">Dibatalkan</p>
                 </div>
+                {{-- Peminjaman Selesai (DIHAPUS) --}}
+                {{--
+                <div class="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg shadow-sm">
+                    <p class="text-2xl font-bold text-gray-700 dark:text-gray-300">{{ $summary['status_counts']['selesai'] }}</p>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400">Selesai</p>
+                </div>
+                --}}
             </div>
 
             @if($summary['most_booked_room'])
@@ -118,6 +121,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Waktu</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Ruangan</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Peminjam</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">NIM/Unit</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Keperluan</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Status</th>
                             </tr>
@@ -125,20 +129,22 @@
                         <tbody class="bg-white dark:bg-zinc-800 divide-y divide-zinc-200 dark:divide-zinc-700">
                             @foreach ($bookings as $index => $booking)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-900 dark:text-white">{{ $index + 1 }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-300">{{ \Carbon\Carbon::parse($booking->tanggal)->format('d F Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-300">{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-300">{{ $booking->ruangan->nama }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-300">{{ $booking->nama }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500 dark:text-zinc-300">{{ $booking->keperluan }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->tanggal)->format('d F Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
+                                    <td>{{ $booking->ruangan->nama }}</td>
+                                    <td>{{ $booking->mahasiswa->nama }}</td>
+                                    <td>{{ $booking->mahasiswa->NIM }}</td>
+                                    <td>{{ $booking->keperluan }}</td>
+                                    <td>
                                         @php
                                             $badge_class = '';
                                             switch($booking->status) {
                                                 case 'disetujui': $badge_class = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'; break;
                                                 case 'dibatalkan': $badge_class = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'; break;
-                                                case 'selesai': $badge_class = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'; break;
+                                                case 'selesai': $badge_class = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'; break; // Ini tidak akan terpakai lagi di data
                                                 case 'pending': $badge_class = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'; break;
+                                                case 'ditolak': $badge_class = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'; break; // Tambahkan ini jika status 'ditolak' masih ada di DB dan ingin ditampilkan secara spesifik di tabel
                                                 default: $badge_class = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'; break;
                                             }
                                         @endphp
