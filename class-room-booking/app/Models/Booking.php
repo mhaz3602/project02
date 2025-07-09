@@ -8,27 +8,31 @@ class Booking extends Model
 {
     protected $table = 'booking';
     protected $fillable = [
-    'id_ruangan',
-    'id_mahasiswa',
-    'nama',
-    'nim',
-    'no_telp',
-    'tanggal',
-    'jam_mulai',
-    'jam_selesai',
-    'keperluan',
-    'status'
-];
-
-
-
-    public function ruangan()
+        'id_ruangan', 
+        'id_mahasiswa',  // tetap ada, tapi nullable
+        'user_id',       // tambah ini
+        'nama', 
+        'nim', 
+        'no_telp', 
+        'tanggal', 
+        'jam_mulai', 
+        'jam_selesai', 
+        'keperluan', 
+        'status'
+    ];
+    
+    public function user()
     {
-        return $this->belongsTo(Ruangan::class, 'id_ruangan');
+        return $this->belongsTo(User::class);
     }
-
+    
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
+    }
+
+     public function ruangan()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan');
     }
 }

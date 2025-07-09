@@ -30,30 +30,19 @@ class BookingController extends Controller
     {
         $request->validate([
             'id_ruangan' => 'required|exists:ruangan,id',
-            'nama' => 'required|string|max:100',
-            'nim' => 'required|string|max:30',
-            'no_telp' => 'required|string|max:20',
+            'nama' => 'required|string',
+            'nim' => 'required|string',
+            'no_telp' => 'required|string',
             'tanggal' => 'required|date',
             'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai',
-            'keperluan' => 'required|string|max:100',
+            'jam_selesai' => 'required',
+            'keperluan' => 'required|string',
         ]);
-
-        $bentrok = Booking::where('id_ruangan', $request->id_ruangan)
-            ->where('tanggal', $request->tanggal)
-            ->where(function ($query) use ($request) {
-                $query->whereBetween('jam_mulai', [$request->jam_mulai, $request->jam_selesai])
-                      ->orWhereBetween('jam_selesai', [$request->jam_mulai, $request->jam_selesai]);
-            })
-            ->exists();
-
-        if ($bentrok) {
-            return back()->with('error', 'Jadwal bentrok dengan booking lain.');
-        }
 
         Booking::create([
             'id_ruangan' => $request->id_ruangan,
-            'id_mahasiswa' => Auth::id(),
+            'user_id' => auth()->id(),        // pakai user yang login
+            'id_mahasiswa' => null,           // biarkan kosong
             'nama' => $request->nama,
             'nim' => $request->nim,
             'no_telp' => $request->no_telp,
@@ -64,7 +53,7 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil diajukan!');
+        return redirect()->route('booking.riwayat')->with('success', 'Booking berhasil dibuat!');
     }
 
     public function riwayat(Request $request)

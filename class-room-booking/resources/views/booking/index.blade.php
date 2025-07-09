@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($riwayat as $b)
+                    @forelse($booking as $b)
                         <tr>
                             <td class="px-4 py-2">{{ $b->tanggal }}</td>
                             <td class="px-4 py-2">{{ $b->ruangan->nama ?? '-' }}</td>
