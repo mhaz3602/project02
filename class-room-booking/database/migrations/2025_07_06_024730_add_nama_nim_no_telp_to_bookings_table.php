@@ -12,9 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('booking', function (Blueprint $table) {
-            $table->string('nama')->after('id_mahasiswa');
-            $table->string('nim')->after('nama');
-            $table->string('no_telp')->after('nim');
+            if (!Schema::hasColumn('booking', 'nama')) {
+                $table->string('nama')->after('id_mahasiswa');
+            }
+            if (!Schema::hasColumn('booking', 'nim')) {
+                $table->string('nim')->after('nama');
+            }
+            if (!Schema::hasColumn('booking', 'no_telp')) {
+                $table->string('no_telp')->after('nim');
+            }
         });
     }
 
@@ -24,7 +30,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('booking', function (Blueprint $table) {
-            $table->dropColumn(['nama', 'nim', 'no_telp']);
+            if (Schema::hasColumn('booking', 'nama')) {
+                $table->dropColumn('nama');
+            }
+            if (Schema::hasColumn('booking', 'nim')) {
+                $table->dropColumn('nim');
+            }
+            if (Schema::hasColumn('booking', 'no_telp')) {
+                $table->dropColumn('no_telp');
+            }
         });
     }
 };
