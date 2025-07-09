@@ -2,33 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $table = 'booking';
+    use HasFactory;
+
+    protected $table = 'booking'; // Pastikan nama tabel benar
     protected $fillable = [
-    'id_ruangan',
-    'id_mahasiswa',
-    'nama',
-    'nim',
-    'no_telp',
-    'tanggal',
-    'jam_mulai',
-    'jam_selesai',
-    'keperluan',
-    'status'
-];
+        'id_mahasiswa',
+        'id_ruangan',
+        'tanggal',
+        'jam_mulai',
+        'jam_selesai',
+        'keperluan',
+        'status',
+    ];
 
-
-
-    public function ruangan()
-    {
-        return $this->belongsTo(Ruangan::class, 'id_ruangan');
-    }
-
+    /**
+     * Get the mahasiswa that owns the booking.
+     */
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
+    }
+
+    /**
+     * Get the ruangan that owns the booking.
+     */
+    public function ruangan()
+    {
+        return $this->belongsTo(Ruangan::class, 'id_ruangan');
     }
 }

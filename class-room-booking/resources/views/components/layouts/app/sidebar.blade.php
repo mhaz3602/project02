@@ -69,6 +69,13 @@
                             : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
                         ⚙️ Kelola Ruangan
                     </flux:navlist.item>
+
+                    <flux:navlist.item :href="route('laporan.peminjaman')" wire:navigate
+                        class="{{ request()->routeIs('laporan.peminjaman')
+                            ? 'bg-blue-600 text-white font-semibold'
+                            : 'transition-all duration-200 hover:bg-blue-200/50 text-blue-700 dark:text-white' }}">
+                        📊 Laporan Peminjaman
+</flux:navlist.item>
                 @endif
 
             </flux:navlist.group>
