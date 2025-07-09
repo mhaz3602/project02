@@ -148,7 +148,6 @@
                             <th>Waktu</th>
                             <th>Ruangan</th>
                             <th>Peminjam</th>
-                            <th>NIM/Unit</th>
                             <th>Keperluan</th>
                             <th>Status</th>
                         </tr>
@@ -160,8 +159,7 @@
                                 <td>{{ \Carbon\Carbon::parse($booking->tanggal)->format('d F Y') }}</td>
                                 <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
                                 <td>{{ $booking->ruangan->nama }}</td>
-                                <td>{{ $booking->mahasiswa->nama }}</td>
-                                <td>{{ $booking->mahasiswa->NIM }}</td>
+                                <td>{{ $booking->nama }}</td>
                                 <td>{{ $booking->keperluan }}</td>
                                 <td>
                                     @php

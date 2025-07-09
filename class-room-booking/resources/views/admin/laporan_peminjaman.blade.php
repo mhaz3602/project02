@@ -121,7 +121,6 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Waktu</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Ruangan</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Peminjam</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">NIM/Unit</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Keperluan</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-zinc-500 dark:text-zinc-300 uppercase tracking-wider">Status</th>
                             </tr>
@@ -133,8 +132,7 @@
                                     <td>{{ \Carbon\Carbon::parse($booking->tanggal)->format('d F Y') }}</td>
                                     <td>{{ \Carbon\Carbon::parse($booking->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($booking->jam_selesai)->format('H:i') }}</td>
                                     <td>{{ $booking->ruangan->nama }}</td>
-                                    <td>{{ $booking->mahasiswa->nama }}</td>
-                                    <td>{{ $booking->mahasiswa->NIM }}</td>
+                                    <td>{{ $booking->nama }}</td>
                                     <td>{{ $booking->keperluan }}</td>
                                     <td>
                                         @php
