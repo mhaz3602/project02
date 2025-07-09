@@ -9,26 +9,21 @@ use App\Http\Controllers\RuanganController;
 use App\Http\Controllers\KalenderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\Admin\LaporanPeminjamanController;
+use App\Models\User; // Penting: Tambahkan ini agar Intelephense tahu tentang model User
 
 // =======================
 // Public (Guest) Routes
 // =======================
 
-// Home
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Login
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])->middleware('guest')->name('login');
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('guest');
-
-// Register
 Route::get('/register', [RegisteredUserController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store'])->middleware('guest');
-
-// Logout
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->middleware('auth')->name('logout');
 
 // =======================
@@ -38,11 +33,12 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', function () {
-        return auth()->user()->isAdmin()
+        /** @var \App\Models\User $user */ // Ini memberitahu Intelephense bahwa $user adalah objek User
+        $user = auth()->user();
+        return $user->isAdmin()
             ? view('admin.dashboard')
             : view('dashboard');
     })->name('dashboard');
-
 
     // Settings
     Route::redirect('settings', 'settings/profile');
@@ -68,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Ganti Role (Admin <-> Mahasiswa)
     Route::post('/switch-role', function () {
+        /** @var \App\Models\User $user */ // Ini memberitahu Intelephense bahwa $user adalah objek User
         $user = auth()->user();
         $newRole = $user->isAdmin() ? 'mahasiswa' : 'admin';
         $user->update(['role' => $newRole]);
@@ -104,13 +101,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/validasi-booking/{id}/selesai', [BookingController::class, 'selesai'])->name('booking.selesai');
     Route::post('/admin/validasi-booking/{id}/batal', [BookingController::class, 'batal'])->name('booking.batal');
 
-
-    // Kalender, Riwayat, Laporan
+    // Kalender & Riwayat (Admin)
     Route::get('/admin/kalender', [KalenderController::class, 'adminKalender'])->name('admin.kalender');
     Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('admin.booking.riwayat');
 
-    Route::get('/admin/laporan-peminjaman', [LaporanController::class, 'index'])->name('laporan.peminjaman');
-    Route::post('/admin/laporan-peminjaman/cetak', [LaporanController::class, 'cetak'])->name('laporan.peminjaman.cetak');
+    // Laporan Peminjaman (Admin) - PASTIKAN BLOK INI ADA
+    Route::prefix('admin/laporan-peminjaman')->controller(LaporanPeminjamanController::class)->group(function () {
+        Route::get('/', 'index')->name('laporan.peminjaman'); // Rute ini akan menangani tampilan awal dan filter
+        Route::post('/cetak', 'cetak')->name('laporan.peminjaman.cetak');
+    });
 });
 
 // =======================

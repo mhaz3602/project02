@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
-    protected $table = 'booking';
+    use HasFactory;
+
+    protected $table = 'booking'; // Pastikan nama tabel benar
     protected $fillable = [
+
         'id_ruangan', 
         'id_mahasiswa',  // tetap ada, tapi nullable
         'user_id',       // tambah ini
@@ -30,6 +34,7 @@ class Booking extends Model
     {
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
     }
+
 
      public function ruangan()
     {

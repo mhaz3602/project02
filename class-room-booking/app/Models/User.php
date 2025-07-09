@@ -2,59 +2,76 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Str;
+// use Laravel\Sanctum\HasApiTokens; // Baris ini dihapus jika Anda tidak menggunakan Sanctum untuk API token
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    // use HasApiTokens, HasFactory, Notifiable; // HasApiTokens dihapus dari sini
+    use HasFactory, Notifiable; // Hanya HasFactory dan Notifiable yang dipertahankan
 
-    const ROLE_Mahasiswa = 'mahasiswa';
-    const ROLE_Admin = 'admin';
-
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
+        'role', // Pastikan kolom 'role' ada di tabel 'users' di database Anda
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**
-     * Ambil inisial dari nama user
+     * Cek apakah user adalah admin.
+     * Method ini akan mengembalikan true jika role user adalah 'admin'.
+     * Pastikan kolom 'role' ada di tabel 'users' di database Anda
+     * dan nilainya adalah 'admin' untuk user admin.
      */
-    public function initials(): string
+    public function isAdmin()
     {
-        return Str::of($this->name)
-            ->explode(' ')
-            ->take(2)
-            ->map(fn($word) => Str::substr($word, 0, 1))
-            ->implode('');
+        return $this->role === 'admin';
     }
 
     /**
-     * Cek apakah user adalah admin
+     * Mengambil inisial dari nama user.
+     * Contoh: "John Doe" -> "JD"
      */
-    public function isAdmin(): bool
+    public function initials()
     {
-        return $this->role === self::ROLE_Admin;
-    }
+        $words = explode(' ', $this->name);
+        $initials = '';
 
-    /**
-     * Cek apakah user adalah mahasiswa
-     */
-    public function isMahasiswa(): bool
-    {
-        return $this->role === self::ROLE_Mahasiswa;
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $initials .= strtoupper(substr($word, 0, 1));
+            }
+        }
+
+        // Jika nama kosong atau tidak ada kata, kembalikan default (misal: 'U' untuk User)
+        return !empty($initials) ? $initials : 'U';
     }
 }

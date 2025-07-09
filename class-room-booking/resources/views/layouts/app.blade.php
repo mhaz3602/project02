@@ -51,6 +51,11 @@
                 <hr class="text-secondary">
                 <a href="{{ route('booking.validasi') }}" class="{{ request()->routeIs('booking.validasi') ? 'active-link' : '' }}">✅ Validasi Peminjaman</a>
                 <a href="{{ route('admin.ruangan.index') }}" class="{{ request()->routeIs('admin.ruangan.*') ? 'active-link' : '' }}">🛠️ Kelola Ruangan</a>
+                
+                {{-- PASTE BARIS INI UNTUK LINK LAPORAN PEMINJAMAN --}}
+                <a href="{{ route('laporan.peminjaman') }}" class="{{ request()->routeIs('laporan.peminjaman') ? 'active-link' : '' }}">📊 Laporan Peminjaman</a>
+                {{-- AKHIR LINK LAPORAN --}}
+
             @endif
 
             <hr class="text-secondary">
