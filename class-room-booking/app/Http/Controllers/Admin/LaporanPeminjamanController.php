@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Booking; // Pastikan ini mengarah ke model Booking Anda
-use App\Models\Ruangan; // Pastikan ini mengarah ke model Ruangan Anda
-use App\Models\Mahasiswa; // Pastikan ini mengarah ke model Mahasiswa Anda
-use Carbon\Carbon; // Digunakan untuk memanipulasi tanggal
+use App\Models\Booking;
+use App\Models\Ruangan;
+use App\Models\Mahasiswa;
+use Carbon\Carbon;
 
 class LaporanPeminjamanController extends Controller
 {
@@ -20,11 +20,14 @@ class LaporanPeminjamanController extends Controller
         $bulan = $request->input('bulan', Carbon::now()->month);
         $tahun = $request->input('tahun', Carbon::now()->year);
 
-        // Panggil fungsi helper untuk mendapatkan data yang sudah difilter
+        // Panggil fungsi helper untuk mendapatkan data booking yang sudah difilter
         $bookings = $this->getFilteredBookings($bulan, $tahun);
 
-        // Kirim data bookings ke view
-        return view('admin.laporan_peminjaman', compact('bookings'));
+        // Hitung statistik ringkasan dan data untuk grafik
+        $summary = $this->calculateSummary($bookings, $bulan, $tahun);
+
+        // Kirim data bookings dan summary ke view
+        return view('admin.laporan_peminjaman', compact('bookings', 'summary', 'bulan', 'tahun'));
     }
 
     /**
@@ -43,19 +46,80 @@ class LaporanPeminjamanController extends Controller
     }
 
     /**
-     * Metode untuk mencetak laporan (belum diimplementasikan, ini hanya placeholder).
-     * Anda bisa mengembangkan ini nanti untuk ekspor PDF/Excel.
+     * Fungsi helper untuk menghitung statistik ringkasan dan menyiapkan data grafik.
+     */
+    private function calculateSummary($bookings, $month, $year)
+    {
+        $totalBookings = $bookings->count();
+        $statusCounts = $bookings->groupBy('status')->map->count();
+
+        // Inisialisasi semua status agar selalu ada, meskipun jumlahnya 0
+        $summaryStatus = [
+            'disetujui' => $statusCounts->get('disetujui', 0),
+            'dibatalkan' => $statusCounts->get('dibatalkan', 0),
+            'selesai' => $statusCounts->get('selesai', 0),
+            'pending' => $statusCounts->get('pending', 0),
+        ];
+
+        // Menemukan ruangan paling sering dipinjam
+        $mostBookedRoom = null;
+        $roomCounts = $bookings->groupBy('ruangan.nama')->map->count();
+        if ($roomCounts->isNotEmpty()) {
+            $mostBookedRoom = $roomCounts->sortDesc()->keys()->first();
+        }
+
+        // --- Data untuk Grafik Status Peminjaman (Doughnut Chart) ---
+        $statusChartLabels = array_map('ucfirst', array_keys($summaryStatus)); // Labels: Disetujui, Dibatalkan, dll.
+        $statusChartData = array_values($summaryStatus); // Data: Jumlah masing-masing status
+        $statusChartColors = [
+            '#4CAF50', // Hijau untuk disetujui
+            '#F44336', // Merah untuk dibatalkan
+            '#2196F3', // Biru untuk selesai
+            '#FFC107', // Kuning untuk pending
+        ];
+
+        // --- Data untuk Grafik Peminjaman Harian (Bar Chart) ---
+        $daysInMonth = Carbon::createFromDate($year, $month, 1)->daysInMonth;
+        $dailyBookings = array_fill(1, $daysInMonth, 0); // Inisialisasi array dengan 0 untuk setiap hari
+
+        foreach ($bookings as $booking) {
+            $day = Carbon::parse($booking->tanggal)->day;
+            $dailyBookings[$day]++;
+        }
+
+        $dailyChartLabels = array_keys($dailyBookings); // Labels: 1, 2, 3, ... (tanggal)
+        $dailyChartData = array_values($dailyBookings); // Data: Jumlah booking per tanggal
+
+        return [
+            'total_bookings' => $totalBookings,
+            'status_counts' => $summaryStatus,
+            'most_booked_room' => $mostBookedRoom,
+            'charts' => [
+                'status' => [
+                    'labels' => $statusChartLabels,
+                    'data' => $statusChartData,
+                    'colors' => $statusChartColors,
+                ],
+                'daily' => [
+                    'labels' => $dailyChartLabels,
+                    'data' => $dailyChartData,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Metode untuk mencetak laporan.
+     * Ini akan mengembalikan view khusus cetak.
      */
     public function cetak(Request $request)
     {
-        // Logika untuk mencetak laporan (misalnya, generate PDF atau Excel)
-        // Akan memerlukan library tambahan seperti DomPDF atau Maatwebsite/Excel
-        // Anda bisa mengambil data dengan cara yang sama seperti di method index
         $bulan = $request->input('bulan', Carbon::now()->month);
         $tahun = $request->input('tahun', Carbon::now()->year);
         $bookings = $this->getFilteredBookings($bulan, $tahun);
+        $summary = $this->calculateSummary($bookings, $bulan, $tahun);
 
-        // Contoh sederhana: mengembalikan string atau view khusus cetak
-        return "Fitur cetak laporan untuk bulan {$bulan} tahun {$tahun} akan dikembangkan di sini.";
+        // Mengembalikan view khusus untuk cetak
+        return view('admin.laporan_peminjaman_cetak', compact('bookings', 'summary', 'bulan', 'tahun'));
     }
 }

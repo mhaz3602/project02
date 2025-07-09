@@ -105,10 +105,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/kalender', [KalenderController::class, 'adminKalender'])->name('admin.kalender');
     Route::get('/admin/riwayat-booking', [BookingController::class, 'riwayatAdmin'])->name('admin.booking.riwayat');
 
-    // Laporan Peminjaman (Admin) - PASTIKAN BLOK INI ADA
+    // Laporan Peminjaman (Admin)
     Route::prefix('admin/laporan-peminjaman')->controller(LaporanPeminjamanController::class)->group(function () {
-        Route::get('/', 'index')->name('laporan.peminjaman'); // Rute ini akan menangani tampilan awal dan filter
-        Route::post('/cetak', 'cetak')->name('laporan.peminjaman.cetak');
+        Route::get('/', 'index')->name('laporan.peminjaman');
+        Route::get('/cetak', 'cetak')->name('laporan.peminjaman.cetak'); // DIUBAH DARI POST MENJADI GET
     });
 });
 
